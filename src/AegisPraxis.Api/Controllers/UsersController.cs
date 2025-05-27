@@ -11,11 +11,33 @@ public class UsersController : ControllerBase
 {
     private readonly IUserSyncService _syncService;
     private readonly IUserQueryService _queryService;
+    private readonly IUserProfileService _profileService;
 
-    public UsersController(IUserSyncService syncService, IUserQueryService queryService)
+    public UsersController(
+        IUserSyncService syncService,
+        IUserQueryService queryService,
+        IUserProfileService profileService)
     {
         _syncService = syncService;
         _queryService = queryService;
+        _profileService = profileService;
+    }
+
+    [Authorize]
+    [HttpGet("me")]
+    public async Task<IActionResult> GetMe()
+    {
+        var user = await _profileService.GetCurrentUserAsync(User);
+        if (user is null)
+            return NotFound("User not found in the system");
+
+        return Ok(new
+        {
+            user.Id,
+            user.Email,
+            user.FullName,
+            user.TenantId
+        });
     }
 
     [Authorize]

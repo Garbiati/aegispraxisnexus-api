@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using AegisPraxis.Domain.Entities;
 using AegisPraxis.Domain.Interfaces;
 using AegisPraxis.Application.Interfaces;
+using AegisPraxis.Application.Common;
 
 namespace AegisPraxis.Application.Services;
 
@@ -22,7 +23,7 @@ public class UserSyncService : IUserSyncService
         var name = user.FindFirst(ClaimTypes.Name)?.Value ?? "Unknown";
 
         var issuer = user.FindFirst("iss")?.Value ?? throw new UnauthorizedAccessException("Missing 'iss' claim.");
-        var realm = ExtractRealmFromIssuer(issuer);
+        var realm = SecurityHelpers.ExtractRealmFromIssuer(issuer);
 
         var existing = await _users.GetByExternalIdAsync(externalId, realm);
 
@@ -48,11 +49,5 @@ public class UserSyncService : IUserSyncService
 
         await _users.SaveChangesAsync();
         return existing;
-    }
-
-    private static string ExtractRealmFromIssuer(string issuer)
-    {
-        var match = Regex.Match(issuer, @"realms\/([^\/]+)");
-        return match.Success ? match.Groups[1].Value : throw new InvalidOperationException("Cannot extract realm from issuer.");
     }
 }

@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using System.Text.RegularExpressions;
+using AegisPraxis.Application.Common;
 using AegisPraxis.Application.Interfaces;
 using AegisPraxis.Domain.Entities;
 using AegisPraxis.Domain.Interfaces;
@@ -20,14 +21,8 @@ public class UserQueryService : IUserQueryService
         var issuer = user.FindFirst("iss")?.Value
             ?? throw new UnauthorizedAccessException("Missing 'iss' claim.");
 
-        var realm = ExtractRealmFromIssuer(issuer);
+        var realm = SecurityHelpers.ExtractRealmFromIssuer(issuer);
 
         return await _userRepository.GetAllByTenantAsync(realm);
-    }
-
-    private static string ExtractRealmFromIssuer(string issuer)
-    {
-        var match = Regex.Match(issuer, @"realms\/([^\/]+)");
-        return match.Success ? match.Groups[1].Value : throw new InvalidOperationException("Cannot extract realm from issuer.");
     }
 }
