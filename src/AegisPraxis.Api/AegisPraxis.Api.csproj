@@ -19,6 +19,7 @@
   <ItemGroup>
     <ProjectReference Include="..\AegisPraxis.Application\AegisPraxis.Application.csproj" />
     <ProjectReference Include="..\AegisPraxis.Infrastructure\AegisPraxis.Infrastructure.csproj" />
+    <ProjectReference Include="..\AegisPraxis.Domain\AegisPraxis.Domain.csproj" />
   </ItemGroup>
 
 </Project>

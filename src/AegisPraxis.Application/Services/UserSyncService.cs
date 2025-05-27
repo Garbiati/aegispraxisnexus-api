@@ -19,7 +19,7 @@ public class UserSyncService : IUserSyncService
     {
         var externalId = user.FindFirst("sub")?.Value ?? throw new UnauthorizedAccessException("Missing 'sub' claim.");
         var email = user.FindFirst(ClaimTypes.Email)?.Value ?? "unknown@email.com";
-        var name = user.FindFirst("name")?.Value ?? "Unknown";
+        var name = user.FindFirst(ClaimTypes.Name)?.Value ?? "Unknown";
 
         var issuer = user.FindFirst("iss")?.Value ?? throw new UnauthorizedAccessException("Missing 'iss' claim.");
         var realm = ExtractRealmFromIssuer(issuer);
