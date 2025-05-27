@@ -1,4 +1,14 @@
+using AegisPraxis.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
+
+var connectionString = builder.Configuration["ConnectionStrings:Default"]
+    ?? Environment.GetEnvironmentVariable("DB_CONNECTION_STRING")
+    ?? throw new InvalidOperationException("No DB connection string provided.");
+
+builder.Services.AddDbContext<AegisDbContext>(options =>
+    options.UseNpgsql(connectionString));
+
 
 // Auth settings from appsettings.json
 var jwtSettings = builder.Configuration.GetSection("Jwt");
