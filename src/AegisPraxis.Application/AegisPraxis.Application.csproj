@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AegisPraxis.Domain\AegisPraxis.Domain.csproj" />
+    <ProjectReference Include="..\AegisPraxis.Infrastructure\AegisPraxis.Infrastructure.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

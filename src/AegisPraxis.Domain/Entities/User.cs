@@ -1,4 +1,5 @@
 namespace AegisPraxis.Domain.Entities;
+
 public class User
 {
     public Guid Id { get; set; }
@@ -7,6 +8,7 @@ public class User
     public string FullName { get; set; } = default!;
     public string? ActiveRole { get; set; }
     public bool IsActive { get; set; } = true;
+    public string TenantId { get; set; } = default!;
 
     public ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
 }

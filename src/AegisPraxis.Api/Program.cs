@@ -1,4 +1,8 @@
+using AegisPraxis.Application.Interfaces;
+using AegisPraxis.Application.Services;
+using AegisPraxis.Domain.Interfaces;
 using AegisPraxis.Infrastructure.Data;
+using AegisPraxis.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,6 +46,11 @@ builder.Services.AddAuthorization(options =>
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
+
+
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserSyncService, UserSyncService>();
+
 
 var app = builder.Build();
 
