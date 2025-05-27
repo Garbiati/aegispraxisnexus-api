@@ -14,6 +14,13 @@ public class UserRepository : IUserRepository
         _context = context;
     }
 
+    public async Task<IEnumerable<User>> GetAllByTenantAsync(string tenantId)
+    {
+        return await _context.Users
+            .Where(u => u.TenantId == tenantId)
+            .ToListAsync();
+    }
+
     public async Task<User?> GetByExternalIdAsync(string externalId, string tenantId)
     {
         return await _context.Users

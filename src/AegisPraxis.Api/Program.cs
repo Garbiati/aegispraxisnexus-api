@@ -50,7 +50,7 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserSyncService, UserSyncService>();
-
+builder.Services.AddScoped<IUserQueryService, UserQueryService>();
 
 var app = builder.Build();
 

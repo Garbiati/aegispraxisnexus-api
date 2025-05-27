@@ -10,11 +10,12 @@ namespace AegisPraxis.Api.Controllers;
 public class UsersController : ControllerBase
 {
     private readonly IUserSyncService _syncService;
+    private readonly IUserQueryService _queryService;
 
-
-    public UsersController(IUserSyncService syncService)
+    public UsersController(IUserSyncService syncService, IUserQueryService queryService)
     {
         _syncService = syncService;
+        _queryService = queryService;
     }
 
     [Authorize]
@@ -29,5 +30,19 @@ public class UsersController : ControllerBase
             user.Email,
             user.FullName
         });
+    }
+
+    [Authorize]
+    [HttpGet]
+    public async Task<IActionResult> GetUsers()
+    {
+        var users = await _queryService.GetUsersByRealmAsync(User);
+        return Ok(users.Select(u => new
+        {
+            u.Id,
+            u.Email,
+            u.FullName,
+            u.TenantId
+        }));
     }
 }
