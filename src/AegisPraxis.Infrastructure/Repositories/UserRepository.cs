@@ -27,6 +27,17 @@ public class UserRepository : IUserRepository
             .FirstOrDefaultAsync(u => u.ExternalId == externalId && u.TenantId == tenantId);
     }
 
+    public async Task<List<Role>> GetRolesByNamesAsync(IEnumerable<string> roleNames, string tenantId)
+    {
+        return await _context.Roles
+            .Where(r => roleNames.Contains(r.Name) && r.TenantId == tenantId)
+            .ToListAsync();
+    }
+    public async Task AddRoleAsync(Role role)
+    {
+        await _context.Roles.AddAsync(role);
+    }
+
     public async Task AddAsync(User user)
     {
         await _context.Users.AddAsync(user);

@@ -8,4 +8,6 @@ public interface IUserRepository
     Task<User?> GetByExternalIdAsync(string externalId, string tenantId);
     Task AddAsync(User user);
     Task SaveChangesAsync();
+    Task AddRoleAsync(Role role);
+    Task<List<Role>> GetRolesByNamesAsync(IEnumerable<string> roleNames, string tenantId);
 }

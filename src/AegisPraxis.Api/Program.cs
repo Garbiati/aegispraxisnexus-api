@@ -25,6 +25,14 @@ builder.Services.AddAuthentication("Bearer")
         options.Audience = jwtSettings["Audience"];
         options.RequireHttpsMetadata = bool.Parse(jwtSettings["RequireHttpsMetadata"] ?? "false");
 
+        // ⚠️ Desabilita a validação de "aud"
+        options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+        {
+            ValidateAudience = false, //TODO: Enable this in production
+            ValidateIssuer = true,
+            ValidateLifetime = true,
+        };
+
         // For logging/debugging token issues
         options.Events = new Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerEvents
         {
@@ -36,6 +44,7 @@ builder.Services.AddAuthentication("Bearer")
         };
     });
 
+
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdminOnly", policy =>
@@ -44,9 +53,22 @@ builder.Services.AddAuthorization(options =>
         policy.RequireRole("doctor"));
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy
+            .WithOrigins("http://localhost:5173")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
-
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserSyncService, UserSyncService>();
@@ -58,11 +80,23 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "AegisPraxis Nexus API v1");
+        c.RoutePrefix = "swagger";
+    });
+}
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
 }
 
+app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
-app.UseHttpsRedirection();
+
+
+
 app.Run();
